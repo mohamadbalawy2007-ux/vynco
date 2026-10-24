@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthCode {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  bool _Initialized = false;
   Stream<User?> get authChanges => _auth.authStateChanges();
   User? get user => _auth.currentUser;
 
@@ -15,22 +15,21 @@ class AuthCode {
         return _auth.currentUser;
       }
 
-      final googleSignIn = GoogleSignIn(
-        clientId: defaultTargetPlatform == TargetPlatform.iOS
-            ? "561806827361-bflko3go5khhjre8q2t7airsv7e8guve.apps.googleusercontent.com"
-            : null,
-      );
+      final googleSignIn = GoogleSignIn.instance;
 
-      GoogleSignInAccount? googleUser = await googleSignIn.signInSilently();
+      if (!_Initialized) {
+        await googleSignIn.initialize();
+        _Initialized = true;
+      }
 
-      googleUser ??= await googleSignIn.signIn();
+      GoogleSignInAccount? googleUser =
+          await googleSignIn.attemptLightweightAuthentication();
 
-      if (googleUser == null) return null;
+      googleUser ??= await googleSignIn.authenticate();
 
-      final googleAuth = await googleUser.authentication;
+      final googleAuth = googleUser.authentication;
 
       final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
@@ -71,11 +70,7 @@ class AuthCode {
 
   Future<void> SignOut() async {
     try {
-      await GoogleSignIn(
-        clientId: defaultTargetPlatform == TargetPlatform.iOS
-            ? "561806827361-bflko3go5khhjre8q2t7airsv7e8guve.apps.googleusercontent.com"
-            : null,
-      ).signOut();
+      await GoogleSignIn.instance.signOut();
       await _auth.signOut();
     } catch (e) {
       print(e);
