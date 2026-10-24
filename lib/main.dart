@@ -10,7 +10,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (defaultTargetPlatform == TargetPlatform.iOS) {
-    await Firebase.initializeApp(w
+    await Firebase.initializeApp(
       options: FirebaseOptions(
         apiKey: "AIzaSyAsEHM8d7ee2n8odsmF-dfN_s0FnhDzHkc",
         appId: "1:561806827361:ios:f75a4346d50d6e12382f20",
