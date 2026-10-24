@@ -18,8 +18,7 @@ void main() async {
         projectId: "my-app-d49d5",
         storageBucket: "my-app-d49d5.firebasestorage.app",
         iosBundleId: "com.mohamadb2007.project1",
-        iosClientId:
-            "561806827361-bflko3go5khhjre8q2t7airsv7e8guve.apps.googleusercontent.com",
+        iosClientId: "561806827361-bflko3go5khhjre8q2t7airsv7e8guve.apps.googleusercontent.com",
       ),
     );
   } else {
