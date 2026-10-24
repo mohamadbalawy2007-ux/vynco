@@ -1,58 +1,19 @@
-
 workflows:
   ios-unsigned:
     name: iOS Unsigned Build
     max_build_duration: 60
     environment:
       flutter: stable
-
     scripts:
       - name: Get Flutter packages
         script: flutter pub get
-
-      - name: Update Google Sign-In iOS SDK dependency
-        script: |
-          set -e
-
-          FILE="ios/.symlinks/plugins/google_sign_in_ios/ios/google_sign_in_ios/Package.swift"
-
-          if [ ! -f "$FILE" ]; then
-            FILE="$(find "$HOME/.pub-cache/hosted/pub.dev/google_sign_in_ios-5.8.1" -name Package.swift -print -quit)"
-          fi
-
-          if [ ! -f "$FILE" ]; then
-            echo "ERROR: Google Sign-In Package.swift not found"
-            exit 1
-          fi
-
-          python3 - "$FILE" <<'PY'
-          from pathlib import Path
-          import sys
-
-          path = Path(sys.argv[1])
-          content = path.read_text()
-
-          old = 'from: "7.1.0"'
-          new = 'from: "10.1.0"'
-
-          if new in content:
-              print("Google Sign-In SDK dependency already updated.")
-          elif old in content:
-              path.write_text(content.replace(old, new, 1))
-              print("Updated Google Sign-In SDK dependency.")
-          else:
-              raise SystemExit("Expected dependency not found. Stopping safely.")
-          PY
-
       - name: Build unsigned iOS
         script: flutter build ios --release --no-codesign
-
       - name: Create IPA manually
         script: |
           mkdir -p build/ios/iphoneos/Payload
           cp -r build/ios/iphoneos/Runner.app build/ios/iphoneos/Payload/
           cd build/ios/iphoneos
           zip -r unsigned.ipa Payload
-
     artifacts:
       - build/ios/iphoneos/unsigned.ipa
