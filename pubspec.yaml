@@ -1,4 +1,3 @@
-
 name: project_1
 description: "A new Flutter project."
 publish_to: 'none'
@@ -29,6 +28,9 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
+  config:
+    enable-swift-package-manager: false
+
   assets:
     - assets/Images/
 
@@ -37,5 +39,3 @@ flutter_launcher_icons:
   ios: true
   image_path: "assets/Images/app_logo.jpg"
   min_sdk_android: 24
-
-
