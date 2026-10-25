@@ -37,7 +37,17 @@ class jitsiCode {
         ),
       );
       _firestoreDB.addMeetingtoDB(roomName);
-      await jitsiMeet.join(options);
+      await jitsiMeet.join(
+        options,
+        JitsiMeetEventListener(
+          conferenceTerminated: (url, error) {
+            jitsiMeet.hangUp();
+          },
+          readyToClose: () {
+            jitsiMeet.hangUp();
+          },
+        ),
+      );
     } catch (error) {
       print("error: $error");
     }
