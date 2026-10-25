@@ -30,6 +30,8 @@ android {
         release {
             // إعداد التوقيع الحالي كما كان في مشروعك
             signingConfig = signingConfigs.getByName("debug")
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
 }
